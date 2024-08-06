@@ -1,0 +1,32 @@
+#Paste this code in your configuration.yaml
+#Do not change the names of the sensors! These are predefined by Sungrow and should not be modified!
+  - platform: template
+    sensors:
+      speicher_zeit_bis_leer:
+        value_template: >
+          {% set battery_level = states('sensor.battery_level') | float(0) %}
+          {% set min_battery_level = 5 %} #Here you can set the minimum SoC for your battery. The default setting is 5% for Sungrow battery.
+          {% set ak_battery_discharging = states('sensor.battery_discharging_power') | float(0) %}
+          {% set discharging_power_avg = states('sensor.battery_discharging_power_durchschnitt') | float(0) %}
+          {% set battery_capacity = states('sensor.battery_capacity') | float %}
+          {% if battery_level <= min_battery_level %}
+            Battery empty
+          {% elif ak_battery_discharging > 0 %}
+            {% set remaining_capacity = (battery_level - min_battery_level) / 100 * battery_capacity * 0.96 * 0.9 %}  #Here is the calculation done, to determine how long the storage can continue to discharge. If you know of a better implementation, please feel free to provide it.
+            {{ (remaining_capacity / (discharging_power_avg / 1000)) | round(1) }} h
+          {% else %}
+            Battery not disharging
+          {% endif %}
+      speicher_zeit_bis_voll:
+        value_template: >
+          {% set battery_level = states('sensor.battery_level') | float(0) %}
+          {% set charging_power_avg = states('sensor.battery_charging_power_durchschnitt') | float(0) %}
+          {% set battery_capacity = states('sensor.battery_capacity') | float %}
+          {% set ak_battery_charging = states('sensor.battery_charging_power') | float(0) %}
+          {% if battery_level >= 100 %}
+            Battery full
+          {% elif ak_battery_charging > 0 %}
+            {{ ((((battery_capacity * 0.96 * 0.9) - (battery_level / 100 * battery_capacity * 0.96 * 0.9)) / (charging_power_avg / 1000)) | round(1)) }} h #Here is the calculation done, to determine when the storage will be fully charged again. If you know of a better implementation, please feel free to provide it.
+          {% else %}
+            Battery not charging
+          {% endif %}
