@@ -1,0 +1,32 @@
+#Fügen Sie diesen Code ebenfalls in Ihre configuration.yaml ein.
+#Ändern Sie nicht die Namen der Sensoren, diese sind von Sungrow vorgegeben, und sollten nicht geändert werden!
+  - platform: template
+    sensors:
+      speicher_zeit_bis_leer:
+        value_template: >
+          {% set battery_level = states('sensor.battery_level') | float(0) %}
+          {% set min_battery_level = 5 %} #Legen Sie hier die min SoC Ihres Speichers fest, bei Sungrow standardmaeßig 5%
+          {% set ak_battery_discharging = states('sensor.battery_discharging_power') | float(0) %}
+          {% set discharging_power_avg = states('sensor.battery_discharging_power_durchschnitt') | float(0) %}
+          {% set battery_capacity = states('sensor.battery_capacity') | float %}
+          {% if battery_level <= min_battery_level %}
+            Batterie leer
+          {% elif ak_battery_discharging > 0 %}
+            {% set remaining_capacity = (battery_level - min_battery_level) / 100 * battery_capacity * 0.96 * 0.9 %}  #Hier findet die Berechnung statt, wie lange der Speicher noch entladen werden kann. Sollten Sie eine bessere Implementierung kennen, können Sie mir diese gerne bereitstellen.
+            {{ (remaining_capacity / (discharging_power_avg / 1000)) | round(1) }} h
+          {% else %}
+            Batterie entlädt nicht
+          {% endif %}
+      speicher_zeit_bis_voll:
+        value_template: >
+          {% set battery_level = states('sensor.battery_level') | float(0) %}
+          {% set charging_power_avg = states('sensor.battery_charging_power_durchschnitt') | float(0) %}
+          {% set battery_capacity = states('sensor.battery_capacity') | float %}
+          {% set ak_battery_charging = states('sensor.battery_charging_power') | float(0) %}
+          {% if battery_level >= 100 %}
+            Batterie voll
+          {% elif ak_battery_charging > 0 %}
+            {{ ((((battery_capacity * 0.96 * 0.9) - (battery_level / 100 * battery_capacity * 0.96 * 0.9)) / (charging_power_avg / 1000)) | round(1)) }} h #Hier findet die Berechnung statt, bis wann der Speicher wieder voll ist. Sollten Sie eine bessere Implementierung kennen, können Sie mir diese gerne bereitstellen.
+          {% else %}
+            Batterie lädt nicht
+          {% endif %}
