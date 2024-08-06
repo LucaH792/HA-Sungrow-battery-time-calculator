@@ -2,7 +2,7 @@
 #Do not change the names of the sensors! These are predefined by Sungrow and should not be modified!
   - platform: template
     sensors:
-      speicher_zeit_bis_leer:
+      battery_time_until_empty:
         value_template: >
           {% set battery_level = states('sensor.battery_level') | float(0) %}
           {% set min_battery_level = 5 %} #Here you can set the minimum SoC for your battery. The default setting is 5% for Sungrow battery.
@@ -17,7 +17,7 @@
           {% else %}
             Battery not disharging
           {% endif %}
-      speicher_zeit_bis_voll:
+      battery_time_until_full:
         value_template: >
           {% set battery_level = states('sensor.battery_level') | float(0) %}
           {% set charging_power_avg = states('sensor.battery_charging_power_durchschnitt') | float(0) %}
