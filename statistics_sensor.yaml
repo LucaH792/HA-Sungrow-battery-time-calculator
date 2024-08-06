@@ -1,0 +1,18 @@
+#Paste the following code in your configuration.yaml in Home Assistant:
+
+sensor:
+  - platform: statistics
+    name: "battery_discharging_power_durchschnitt"
+    entity_id: sensor.battery_discharging_power
+    state_characteristic: mean
+    sampling_size: 244 #Here you can set the number of data points refereced. More data points result in more accurate results, but depend heavily on the update rate you have set for the sensors.
+    max_age:
+      minutes: 45 #Here you can change the time span that the data refers to. A shorter time span results in rapidly changing values, while a longer time span provides more consistent results. Recommended between 5-60 minutes.
+
+  - platform: statistics
+    name: "battery_charging_power_durchschnitt"
+    entity_id: sensor.battery_charging_power
+    state_characteristic: mean
+    sampling_size: 244 #Use the same values as above to avoid generating wrong values.
+    max_age:
+      minutes: 45 #Use the same values as above to avoid generating wrong values.
