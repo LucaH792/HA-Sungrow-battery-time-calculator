@@ -1,1 +1,16 @@
+#Nur Ladezeit/Entladezeit
+show_name: true
+show_icon: true
+show_state: true
+type: glance
+entities:
+  - entity: sensor.batterie_zeit_bis_voll
+    icon: mdi:battery-charging-100
+    name: Verbleibende Ladezeit
+  - entity: sensor.batterie_zeit_bis_leer
+    secondary_info: none
+    icon: mdi:battery-charging-outline
+    name: Verbleibende Nutzzeit
+state_color: true
+columns: 2
 
