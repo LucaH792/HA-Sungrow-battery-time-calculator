@@ -9,7 +9,7 @@ This repository offers a scheduling tool to manage the charge and discharge time
 ## Requirements
 
 ```bash
-  1. ModBus integration by Mkaiser.
+  1. ModBus integration by Mkaiser. (https://github.com/mkaiser/Sungrow-SHx-Inverter-Modbus-Home-Assistant)
   2. Home Assistant-Core version 2024.4.0b7 or newer
 ```
 
