@@ -8,7 +8,6 @@ entities:
     icon: mdi:battery-charging-100
     name: Remaining Charging Time
   - entity: sensor.batterie_zeit_bis_leer
-    secondary_info: none
     icon: mdi:battery-charging-outline
     name: Remaining Usage Time
 state_color: true
